@@ -3,39 +3,49 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Switch } from "@/components/ui/switch";
 import "./globals.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { axiosService } from "@/lib/axios-service";
+import { useAuth } from "./hooks/auth";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
-    // 1. Use a boolean for your state. `true` means on, `false` means off.
-    const [isOn, setIsOn] = useState(true); // Let's start with it being 'on'
+    const { user, isLoading, logout } = useAuth();
 
-    // You can see the state change in the console
-    console.log("Switch is currently:", isOn ? "on" : "off");
+    const navigate = useRouter();
+    console.log(user, isLoading);
 
     return (
         <div>
-            <Tabs defaultValue='account' className='w-[400px]'>
-                <TabsList>
-                    <TabsTrigger value='account'>Account</TabsTrigger>
-                    <TabsTrigger value='password'>Password</TabsTrigger>
-                </TabsList>
-                <TabsContent value='account'>
-                    Make changes to your account here.
-                </TabsContent>
-                <TabsContent value='password'>
-                    Change your password here.
-                </TabsContent>
-            </Tabs>
-
-            <div className='p-4 rounded-md'>
-                <Switch
-                    // 2. The switch's visual state is now controlled by your `isOn` variable.
-                    checked={isOn}
-                    // 3. When the switch is clicked, it calls setIsOn with the new value.
-                    // If it was on, it calls setIsOn(false). If it was off, it calls setIsOn(true).
-                    onCheckedChange={setIsOn}
-                />
-            </div>
+            {isLoading ? (
+                <div className='flex items-center justify-center h-screen'>
+                    <p className='text-2xl'>Loading...</p>
+                </div>
+            ) : user ? (
+                <div className='flex flex-col items-center justify-center h-screen'>
+                    <h1 className='text-3xl font-bold mb-4'>
+                        Welcome, {user.name}!
+                        {
+                            user.email && <span className='text-sm text-gray-500'> ({user.email})</span>    
+                        }
+                    </h1>
+                    <button
+                        onClick={logout}
+                        className='px-4 py-2 bg-blue-500 text-white rounded'
+                    >
+                        Logout
+                    </button>
+                </div>
+            ) : (
+                <div className='flex items-center justify-center h-screen'>
+                    <p className='text-2xl'>Please log in.</p>
+                    <button
+                        onClick={() => navigate.push("/auth/login")}
+                        className='ml-4 px-4 py-2 bg-blue-500 text-white rounded'
+                    >
+                        Go to Login
+                    </button>                    
+                </div>
+            )}
         </div>
     );
 }

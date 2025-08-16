@@ -65,7 +65,7 @@ export default function Footer() {
                 <h3 className='footer-section-title'> Download app</h3>
                 <div className='flex space-y-2 flex-col'>
                     <p>Save $3 with App New User Only</p>
-                    <Image height={84} width={198} className="w-full" src={'/app-store-link.png'}></Image>
+                    <Image height={84} width={198} className="w-full" alt="footerlogo" src={'/app-store-link.png'}></Image>
 
                     <div className="flex w-full gap-4 mt-4 items-center text-xl">
                         <FiFacebook/>

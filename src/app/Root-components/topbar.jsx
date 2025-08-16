@@ -1,9 +1,17 @@
+'use client';
+
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
-import { FiSearch, FiShoppingCart, FiUser } from "react-icons/fi";
+import { FiLogIn, FiSearch, FiShoppingCart, FiUser } from "react-icons/fi";
+import { useAuth } from "../hooks/auth";
 
 export default function Topbar() {
+
+    const { user , isLoading } = useAuth();
+
+ 
+
     return (
         <div className='flex w-full justify-between items-center py-6 px-10 shadow-md'>
             <div>
@@ -46,9 +54,22 @@ export default function Topbar() {
                         <FiSearch />
                     </button>
                 </div>
-                <FiUser></FiUser>
-                <FiShoppingCart />
+                {isLoading ? (
+                    <p className='text-gray-500'>Loading...</p>
+                ) : user ? (
+                    <Link href={"/auth/profile"}>
+                        <FiUser />
+                    </Link>
+                ) : (
+                    <Link href={"/auth/login"}>
+                        <FiLogIn />
+                    </Link>
+                )}
+                <Link href={"/cart"}>
+                    <FiShoppingCart />
+                </Link>
             </div>
+             
         </div>
     );
 }
